@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="js/ag-grid-community.min.noStyle.js"></script>
+    <link rel="stylesheet" href="css/ag-grid.css">
+    <link rel="stylesheet" href="css/ag-theme-balham.css">
+  </head>
+  <body>
+    <h1>Hello from ag-grid!</h1>
+    <button onclick="getSelectedRows()">Get Selected Rows</button>
+    <div id="myGrid" style="height: 600px; widows: 500px;" class="ag-theme-balham"></div>
+
+    <script type="text/javascript" charset="utf-8">
+        // let the grid know which columns and what data to use
+        var gridOptions = {
+            rowSelection: 'multiple'
+        };
+
+        // lookup the container we want the Grid to use
+        var eGridDiv = document.querySelector('#myGrid');
+        new agGrid.Grid(eGridDiv, gridOptions);
+
+        console.log(gridOptions.api.setRowData)
+
+        fetch('http://localhost:8000/data/tableData').then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            gridOptions.api.setColumnDefs(data.columnDefs);
+            gridOptions.api.setRowData(data.tableData);
+        })
+
+        function getSelectedRows() {
+            var selectedNodes = gridOptions.api.getSelectedNodes()  
+            console.log(selectedNodes)
+            var selectedData = selectedNodes.map( function(node) { return node.data })
+            console.log(selectedData)
+            var selectedDataStringPresentation = selectedData.map( function(node) { return node.make + ' ' + node.model }).join(', ')
+            console.log(selectedDataStringPresentation)
+        }
+    </script>
+  </body>
+</html>
